@@ -1,25 +1,49 @@
 extends CharacterBody2D
 
+class_name Bird
 
-const SPEED = 300.0
-const JUMP_VELOCITY = -400.0
+@export var gravity: float = 900.0
+@export var jump_force: int = -300
+@export var rotation_speed: int = 2
 
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
+var max_speed: int = 400
+var is_started: bool = false
+var process_input: bool = true
+
+func _ready() -> void:
+	velocity = Vector2.ZERO
+	animation_player.play("idle")
+	
 func _physics_process(delta: float) -> void:
-	# Add the gravity.
-	if not is_on_floor():
-		velocity += get_gravity() * delta
+	if Input.is_action_just_pressed("jump"):
+		if !is_started:
+			is_started = true
+		if process_input:
+			animation_player.play("flap_wings")
+			jump()
+	
+	if is_started:
+		velocity.y += gravity * delta
+		velocity.y = min(velocity.y, max_speed)
+		
+		move_and_collide(velocity * delta)
+		rotate_bird()
+		
+func jump():
+	velocity.y = jump_force
+	rotation = deg_to_rad(-30)
 
-	# Handle jump.
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
+func rotate_bird():
+	# Rotate downwrds when failing
+	if velocity.y > 0 && rotation_degrees < 90:
+		rotation_degrees += rotation_speed * 1
+	elif velocity.y < 0 && rotation_degrees > -30:
+		rotation_degrees -= rotation_speed * 1
 
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
-	var direction := Input.get_axis("ui_left", "ui_right")
-	if direction:
-		velocity.x = direction * SPEED
-	else:
-		velocity.x = move_toward(velocity.x, 0, SPEED)
-
-	move_and_slide()
+func stop():
+	animation_player.stop()
+	gravity = 0
+	velocity = Vector2.ZERO
+	process_input = false
