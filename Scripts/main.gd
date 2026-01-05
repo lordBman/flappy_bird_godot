@@ -1,15 +1,27 @@
-extends Node
+extends Node2D
+
+class_name Main
 
 @onready var pipe_spawner: PipeSpawner = $PipeSpawner
+@onready var bird: Bird = $Bird
+@onready var ground: Ground = $Ground
 
-var running: bool = false
+var score = 0
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	bird.game_started.connect(on_game_start)
+	pipe_spawner.bird_crashed.connect(end_game)
+	pipe_spawner.point_scored.connect(func (): score += 1)
+	ground.bird_crashed.connect(stop_bird)
 
+func on_game_start():
+	pipe_spawner.start_spawning()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	if Input.is_action_just_pressed("jump") && !running:
-		pipe_spawner.start_spawning()
+func stop_bird():
+	bird.stop()
+	end_game()
+	
+func end_game():
+	bird.kill()
+	ground.stop()
+	pipe_spawner.stop()

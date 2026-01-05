@@ -6,6 +6,8 @@ class_name Bird
 @export var jump_force: int = -300
 @export var rotation_speed: int = 2
 
+signal game_started
+
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 var max_speed: int = 400
@@ -20,9 +22,8 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("jump"):
 		if !is_started:
 			is_started = true
-		if process_input:
-			animation_player.play("flap_wings")
-			jump()
+			game_started.emit()
+		jump()
 	
 	if is_started:
 		velocity.y += gravity * delta
@@ -32,8 +33,10 @@ func _physics_process(delta: float) -> void:
 		rotate_bird()
 		
 func jump():
-	velocity.y = jump_force
-	rotation = deg_to_rad(-30)
+	if process_input:
+		animation_player.play("flap_wings")
+		velocity.y = jump_force
+		rotation = deg_to_rad(-30)
 
 func rotate_bird():
 	# Rotate downwrds when failing
@@ -42,6 +45,9 @@ func rotate_bird():
 	elif velocity.y < 0 && rotation_degrees > -30:
 		rotation_degrees -= rotation_speed * 1
 
+func kill():
+	process_input = false
+	
 func stop():
 	animation_player.stop()
 	gravity = 0
