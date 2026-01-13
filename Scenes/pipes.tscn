@@ -4,10 +4,10 @@
 [ext_resource type="Texture2D" uid="uid://drx10uoxjpba5" path="res://Assets/pipe-green.png" id="1_uhra5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7ktcp"]
-size = Vector2(45, 478)
+size = Vector2(37, 477)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uhra5"]
-size = Vector2(44, 478)
+size = Vector2(38, 478)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ws3sl"]
 size = Vector2(12, 122)
@@ -20,16 +20,18 @@ position = Vector2(0, -300)
 
 [node name="Sprite2D" type="Sprite2D" parent="TopPipe"]
 rotation = 3.1415927
+scale = Vector2(0.8, 1)
 texture = ExtResource("1_uhra5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TopPipe"]
-position = Vector2(0.5, 0)
+position = Vector2(0.5, -0.5)
 shape = SubResource("RectangleShape2D_7ktcp")
 
 [node name="BottomPipe" type="Area2D" parent="."]
 position = Vector2(0, 300)
 
 [node name="Sprite2D" type="Sprite2D" parent="BottomPipe"]
+scale = Vector2(0.8, 1)
 texture = ExtResource("1_uhra5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BottomPipe"]
@@ -39,7 +41,7 @@ shape = SubResource("RectangleShape2D_uhra5")
 [node name="Scored" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Scored"]
-position = Vector2(32, 0)
+position = Vector2(26, 0)
 shape = SubResource("RectangleShape2D_ws3sl")
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="."]

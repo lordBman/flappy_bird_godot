@@ -5,7 +5,7 @@ class_name Pipes
 signal bird_collided
 signal point_scored
 
-var speed: int = -150
+var _current_speed: int = 0
 
 func _ready() -> void:
 	var viewport_rect = get_viewport_rect()
@@ -16,10 +16,10 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_INHERIT
 
 func set_speed(new_speed: int):
-	speed = new_speed
+	_current_speed = new_speed
 
 func _process(delta: float) -> void:
-	position.x += speed * delta
+	position.x += _current_speed * delta
 	
 func _on_entered(_body: Node2D) -> void:
 	bird_collided.emit()
@@ -28,7 +28,7 @@ func _on_point_scored(_body: Node2D) -> void:
 	point_scored.emit()
 	
 func stop():
-	speed = 0
+	_current_speed = 0
 
 func _on_screen_exited() -> void:
 	queue_free()
